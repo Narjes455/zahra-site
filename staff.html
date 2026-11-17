@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>شاشة التحضير | Zahra Matcha</title>
+<link rel="icon" href="img/logo.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+.login{max-width:340px;margin:12vh auto;text-align:center;background:#fff;border-radius:24px;padding:28px;border:1px solid var(--line)}
+.login img{width:90px;border-radius:20px;margin:0 auto 14px}
+.tabs{display:flex;gap:8px;margin:14px 0}
+.tabs button{flex:1;padding:10px;border-radius:14px;background:#fff;border:1px solid var(--line);font-size:14px}
+.tabs button.on{background:var(--green);color:#fff;border-color:var(--green)}
+.ord pre{white-space:pre-wrap;font-family:inherit;font-size:12px;line-height:1.8}
+.ord a{color:var(--green);font-size:11px}
+.live{font-size:11px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+<div id="login" class="login">
+  <img src="img/logo.jpg" alt="">
+  <h3 style="margin-bottom:12px">شاشة التحضير</h3>
+  <input class="fld" id="pin" type="password" inputmode="numeric" placeholder="الرمز" style="text-align:center;font-size:20px;letter-spacing:6px">
+  <button class="big" style="justify-content:center" onclick="login()">دخول</button>
+</div>
+
+<div id="app" hidden>
+  <header><div class="hwrap"><div class="brand"><img src="img/logo.jpg" alt=""><div><b>Zahra Matcha</b><small>شاشة التحضير</small></div></div>
+    <div style="text-align:left"><span class="live" id="live"></span><br><button class="lbtn" onclick="logout()">خروج</button></div></div></header>
+  <div class="wrap">
+    <div class="tabs"><button class="on" data-t="orders" onclick="tab('orders')">🍵 الطلبات</button><button data-t="avail" onclick="tab('avail')">📋 التوفر</button></div>
+    <div id="t-orders">
+      <div class="cols">
+        <div class="col"><h3>🆕 جديدة <span id="c-0">0</span></h3><div id="l-0"></div></div>
+        <div class="col"><h3>🍵 قيد التحضير <span id="c-1">0</span></h3><div id="l-1"></div></div>
+        <div class="col"><h3>✅ جاهزة <span id="c-2">0</span></h3><div id="l-2"></div></div>
+      </div>
+    </div>
+    <div id="t-avail" hidden>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:10px">أي صنف تطفينه يظهر للعملاء "نفدت الكمية" على طول. الأسعار والأسماء تتعدل من Google Sheets.</p>
+      <div class="tbl" id="tbl"></div>
+    </div>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script>
+const API = window.ZAHRA_CONFIG.API_URL;
+const ST = ['جديد','قيد التحضير','جاهز'], NEXT = {'جديد':'قيد التحضير','قيد التحضير':'جاهز','جاهز':'تم التسليم'}, BTN = {'جديد':'ابدأ التحضير','قيد التحضير':'جاهز ✓','جاهز':'تم التسليم'};
+let PIN = sessionStorage.getItem('zpin') || '', DATA = null, seen = null, timer = null;
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(m){ const t=$('toast'); t.textContent=m; t.classList.add('on'); clearTimeout(toast.t); toast.t=setTimeout(()=>t.classList.remove('on'),2600); }
+async function get(p){ const r=await fetch(API+'?'+new URLSearchParams(p)); const j=await r.json(); if(j.error) throw new Error(j.error); return j; }
+async function post(b){ const r=await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({...b,pin:PIN})}); const j=await r.json(); if(j.error) throw new Error(j.error); return j; }
+function beep(){ try{ const a=new (window.AudioContext||window.webkitAudioContext)(); [0,.25].forEach(d=>{ const o=a.createOscillator(), g=a.createGain(); o.frequency.value=880; o.connect(g); g.connect(a.destination); g.gain.setValueAtTime(.3,a.currentTime+d); g.gain.exponentialRampToValueAtTime(.001,a.currentTime+d+.2); o.start(a.currentTime+d); o.stop(a.currentTime+d+.22); }); }catch(e){} }
+
+async function login(){ if(!API){ toast('الموقع غير مربوط بالنظام بعد'); return; } PIN = $('pin').value.trim() || PIN;
+  try { await refresh(true); sessionStorage.setItem('zpin',PIN); $('login').hidden=true; $('app').hidden=false; clearInterval(timer); timer=setInterval(refresh,20000); }
+  catch(e){ toast(e.message); PIN=''; } }
+function logout(){ sessionStorage.removeItem('zpin'); location.reload(); }
+function tab(t){ document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t)); $('t-orders').hidden=t!=='orders'; $('t-avail').hidden=t!=='avail'; }
+
+async function refresh(first){
+  const d = await get({action:'orders', pin:PIN}); DATA=d;
+  const ids = new Set(d.orders.map(o=>o.no));
+  if (seen && d.orders.some(o=>!seen.has(o.no) && o.status==='جديد')) { beep(); toast('🔔 طلب جديد!'); }
+  seen = ids; render();
+  $('live').textContent = 'آخر تحديث ' + new Date().toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'});
+}
+function render(){
+  ST.forEach((s,i)=>{ const L=DATA.orders.filter(o=>o.status===s);
+    $('c-'+i).textContent=L.length;
+    $('l-'+i).innerHTML = L.length ? L.map(o=>`<div class="ord">
+      <div class="top"><span>#${o.no} • ${esc(o.name)}</span><span>${o.total} ر.س</span></div>
+      <pre>${esc(o.items)}</pre>
+      ${o.note?`<div style="font-size:11px;background:#fff;border-radius:8px;padding:6px;margin-top:6px">💌 ${esc(o.note)}</div>`:''}
+      <div class="meta"><span>⏰ ${esc(o.slot)}</span><span>${o.method==='توصيل'?'🛵 '+esc(o.zone):'🏡 استلام'}</span>${o.reward?'<span>🎁 مشروب ولاء</span>':''}</div>
+      ${o.address?`<div style="font-size:11px;margin-bottom:4px">📍 ${esc(o.address)}</div>`:''}
+      ${o.receipt?`<a href="${esc(o.receipt)}" target="_blank">🧾 عرض الإيصال</a>`:''}
+      <div class="act"><a class="ghost" href="tel:${esc(o.phone)}" style="padding:8px 10px;border-radius:10px;background:#fff;border:1px solid var(--line);text-decoration:none">📞</a>
+      ${s==='جديد'?`<button class="ghost" onclick="cancelOrder(${o.no})">إلغاء</button>`:''}
+      <button onclick="move(${o.no},'${NEXT[s]}')">${BTN[s]}</button></div></div>`).join('') : '<div class="empty">ما فيه طلبات</div>'; });
+  const cats=[]; DATA.menu.forEach(m=>{ if(!cats.includes(m.cat)) cats.push(m.cat); });
+  $('tbl').innerHTML = cats.map(c=>`<div class="tr sub"><span>${esc(c)}</span></div>`+DATA.menu.filter(m=>m.cat===c).map(m=>`<div class="tr" style="grid-template-columns:1fr 60px"><span>${esc(m.name)}</span><button class="tog ${m.available?'on':''}" onclick="avail('${esc(m.id)}',${!m.available},this)"></button></div>`).join('')).join('');
+}
+async function move(no, status){ try{ await post({action:'setStatus',no,status}); const o=DATA.orders.find(x=>x.no===no); o.status=status; if(status==='تم التسليم') DATA.orders=DATA.orders.filter(x=>x!==o); render(); toast(`#${no} ← ${status}`); }catch(e){ toast(e.message); } }
+async function cancelOrder(no){ if(!confirm('إلغاء الطلب #'+no+'؟')) return; await move(no,'ملغي'); DATA.orders=DATA.orders.filter(x=>x.status!=='ملغي'); render(); }
+async function avail(id, v, btn){ btn.classList.toggle('on',v); try{ await post({action:'setAvail',id,available:v}); DATA.menu.find(m=>m.id===id).available=v; render(); toast(v?'رجع متوفر ✓':'صار "نفدت الكمية"'); }catch(e){ btn.classList.toggle('on',!v); toast(e.message); } }
+if (PIN && API) login();
+</script>
+</body>
+</html>

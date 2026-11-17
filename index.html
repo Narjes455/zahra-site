@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zahra Matcha | زهرة ماتشا — اطلب الآن</title>
+<meta name="description" content="ماتشا تحضر بحب من البيت ❣️ — اطلب استلام أو توصيل في القطيف وسيهات">
+<meta property="og:title" content="Zahra Matcha | زهرة ماتشا">
+<meta property="og:description" content="ماتشا تحضر بحب من البيت ❣️ — اطلب الآن">
+<meta property="og:image" content="img/rose.jpg">
+<meta name="theme-color" content="#ee719e">
+<link rel="icon" href="img/logo.jpg">
+<link rel="apple-touch-icon" href="img/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="intro">
+  <div class="flower"><svg viewBox="0 0 200 200" id="flowerSvg"></svg></div>
+  <img class="intro-logo" src="img/logo.jpg" alt="Zahra Matcha">
+  <div class="intro-sub">ماتشا تحضر بحب من البيت ❣️</div>
+  <button class="skip" onclick="closeIntro()">ادخل المنيو ←</button>
+</div>
+<div class="toast" id="toast"></div>
+
+<main>
+  <div class="notice" id="notice" hidden></div>
+  <header><div class="hwrap">
+    <div class="brand"><img src="img/logo.jpg" alt=""><div><b>Zahra Matcha</b><small>القطيف • سيهات</small></div></div>
+    <div class="hbtns">
+      <button class="lbtn" onclick="openLoyalty()">🎟️ <span>بطاقة الولاء</span></button>
+      <button class="cartbtn" id="cartBtn" onclick="openCart()">🛍️ <span class="n" id="cartN">0</span></button>
+    </div>
+  </div></header>
+
+  <div class="wrap">
+    <div class="preview" id="preview" hidden>⚠️ نسخة عرض: الموقع غير مربوط بنظام الطلبات بعد</div>
+    <div class="hero">
+      <span class="tag">🛵 توصيل • 🏡 استلام</span>
+      <h1>ماتشا تحضر بحب<br>من البيت ❣️</h1>
+      <p>اختر مشروبك، عدّله على ذوقك، وحدد وقت الاستلام أو التوصيل.</p>
+      <img src="img/rose.jpg" alt="">
+    </div>
+
+    <div class="info">
+      <div id="openNow"></div>
+      <div id="zonesBox"></div>
+    </div>
+
+    <div class="loy" onclick="openLoyalty()">
+      <div><h3>🎟️ بطاقة الولاء</h3><p id="loyTxt"></p></div>
+      <div class="stamps" id="loyStrip"></div>
+    </div>
+
+    <div class="mood">
+      <h3>🌸 وش مزاجك اليوم؟</h3>
+      <p>قل لنا مزاجك ونقترح لك مشروبك</p>
+      <div class="moods" id="moods"></div>
+      <div class="mood-res" id="moodRes"></div>
+    </div>
+
+    <div class="cats" id="cats"></div>
+    <div id="menu"><div class="loading">جاري تحميل المنيو… 🍵</div></div>
+    <div class="foot">Zahra Matcha • ماتشا تحضر بحب من البيت ❣️<br>تصميم وتطوير: نرجس العمري</div>
+  </div>
+</main>
+
+<div class="overlay" id="ovItem" onclick="if(event.target===this)closeOv('ovItem')"><div class="sheet" id="itemSheet"></div></div>
+<div class="overlay" id="ovCart" onclick="if(event.target===this)closeOv('ovCart')"><div class="sheet" id="cartSheet"></div></div>
+<div class="overlay" id="ovLoy" onclick="if(event.target===this)closeOv('ovLoy')"><div class="sheet" id="loySheet"></div></div>
+
+<script src="config.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
