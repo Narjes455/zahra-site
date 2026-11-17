@@ -10,7 +10,8 @@ const LS = {
 myPhone = LS.get('phone');
 
 const CAT_ICON = {'ماتشا':'🍵','مشروبات باردة':'🧊','مشروبات ساخنة':'☕','حلى ومخبوزات':'🍪','الإضافات':'➕'};
-const PH_ICON = {'مشروبات ساخنة':'☕','حلى ومخبوزات':'🍓','الإضافات':'🧊'};
+const PH_ICON = {'مشروبات ساخنة':'☕','حلى ومخبوزات':'🍓','الإضافات':'➕'};
+const ID_ICON = {'x-cream':'🍦','x-icecream':'🍨','x-double':'🍵','x-ice':'🧊'};
 const MOODS = [
  {e:'😴',n:'نعسان',pick:'classic',msg:'ماتشا كلاسيك مع دبل ماتشا ⚡ تصحيك على طول'},
  {e:'🥰',n:'رايق',pick:'rose',msg:'ماتشا الورد، ناعمة مثل يومك 🌸'},
@@ -32,7 +33,7 @@ const imgSrc = m => !m.img ? '' : /^https?:/.test(m.img) ? m.img : 'img/' + m.im
 function toast(m){ const t=$('toast'); t.textContent=m; t.classList.add('on'); clearTimeout(toast.t); toast.t=setTimeout(()=>t.classList.remove('on'),2600); }
 function closeOv(id){ $(id).classList.remove('on'); }
 function openOv(id){ $(id).classList.add('on'); }
-function picHTML(m, size){ const s=imgSrc(m); return s ? `<img src="${esc(s)}" alt="${esc(m.name)}" loading="lazy">` : `<div class="ph" ${size?`style="width:${size}px;height:${size}px;border-radius:14px;font-size:${size/2}px"`:''}>${PH_ICON[m.cat]||'🍵'}</div>`; }
+function picHTML(m, size){ const s=imgSrc(m); return s ? `<img src="${esc(s)}" alt="${esc(m.name)}" loading="lazy">` : `<div class="ph" ${size?`style="width:${size}px;height:${size}px;border-radius:14px;font-size:${size/2}px"`:''}>${ID_ICON[m.id]||PH_ICON[m.cat]||'🍵'}</div>`; }
 const hm = s => { const [h,m] = String(s||'0:0').split(':').map(Number); return h + (m||0)/60; };
 function fmtH(x){ const h=Math.floor(x), m=Math.round((x%1)*60); const hh=h>12?h-12:(h===0?12:h); return `${hh}:${String(m).padStart(2,'0')} ${h>=12?'م':'ص'}`; }
 function nowH(){ const d=new Date(); return d.getHours()+d.getMinutes()/60; }
@@ -114,7 +115,7 @@ function drawItem(){ const c=cur, m=c.m; let o='';
   const missing = (GROUPS[m.opt]||[]).filter(g=>REQUIRED.includes(g) && optsFor(m,g).length && !(c.sel[g]||[]).length);
   const s = imgSrc(m);
   $('itemSheet').innerHTML = `<div class="sheet-h"><b>${o?'عدّل طلبك ✨':'أضف للسلة'}</b><button class="x" onclick="closeOv('ovItem')">×</button></div>
-  <div class="ihead">${s?`<img src="${s}">`:`<div style="width:110px;height:110px;border-radius:18px;display:grid;place-items:center;font-size:50px;background:var(--pink-l)">${PH_ICON[m.cat]||'🍵'}</div>`}<div><h3>${esc(m.name)}</h3><p>${esc(m.desc)}</p><p class="price" style="margin-top:6px">${money(m.price)}</p></div></div>
+  <div class="ihead">${s?`<img src="${s}">`:`<div style="width:110px;height:110px;border-radius:18px;display:grid;place-items:center;font-size:50px;background:var(--pink-l)">${ID_ICON[m.id]||PH_ICON[m.cat]||'🍵'}</div>`}<div><h3>${esc(m.name)}</h3><p>${esc(m.desc)}</p><p class="price" style="margin-top:6px">${money(m.price)}</p></div></div>
   ${o}
   <div class="opt" style="display:flex;justify-content:space-between;align-items:center"><span class="t" style="margin:0">الكمية</span><div class="qty"><button onclick="cur.qty=Math.max(1,cur.qty-1);drawItem()">−</button><b>${c.qty}</b><button onclick="cur.qty=Math.min(20,cur.qty+1);drawItem()">+</button></div></div>
   <button class="big" ${missing.length?'disabled':''} onclick="addToCart()"><span>${missing.length?'اختر '+missing.join(' و'):'أضف للسلة'}</span><span>${money(curPrice()*c.qty)}</span></button>`; }
@@ -144,7 +145,7 @@ function _drawCart(){
   for (let x=Math.ceil(a*2)/2; x<b-0.01; x+=.5){ const dis = co.day===0 && x<=h+.5; if(!dis) any=true; const l=fmtH(x); if(dis && co.slot===l) co.slot=null; slots += `<button ${dis?'disabled':''} class="${co.slot===l?'on':''}" onclick="co.slot='${l}';drawCart()">${l}</button>`; }
   const drinksN = drinkItems.reduce((a,b)=>a+b.qty,0);
   el.innerHTML = `<div class="sheet-h"><b>سلتك 🛍️</b><button class="x" onclick="closeOv('ovCart')">×</button></div>
-  ${cart.map((c,i)=>`<div class="cline">${c.img?`<img src="${c.img}">`:`<div style="width:48px;height:48px;border-radius:12px;display:grid;place-items:center;font-size:24px;background:var(--pink-l)">${PH_ICON[c.cat]||'🍵'}</div>`}<div class="d"><b>${esc(c.name)}</b> ×${c.qty}<small>${esc(c.opts)}</small></div><b style="font-size:13px">${money(c.price*c.qty)}</b><button class="x" style="width:28px;height:28px;font-size:14px" onclick="cart.splice(${i},1);updCart();drawCart()">×</button></div>`).join('')}
+  ${cart.map((c,i)=>`<div class="cline">${c.img?`<img src="${c.img}">`:`<div style="width:48px;height:48px;border-radius:12px;display:grid;place-items:center;font-size:24px;background:var(--pink-l)">${ID_ICON[c.id]||PH_ICON[c.cat]||'🍵'}</div>`}<div class="d"><b>${esc(c.name)}</b> ×${c.qty}<small>${esc(c.opts)}</small></div><b style="font-size:13px">${money(c.price*c.qty)}</b><button class="x" style="width:28px;height:28px;font-size:14px" onclick="cart.splice(${i},1);updCart();drawCart()">×</button></div>`).join('')}
   <div class="opt" style="margin-top:14px"><span class="t">طريقة الاستلام</span><div class="chips">
     <button class="${co.method==='pickup'?'on':''}" onclick="co.method='pickup';co.slot=null;drawCart()">🏡 استلام</button>
     <button class="${co.method==='delivery'?'on':''}" onclick="co.method='delivery';co.slot=null;drawCart()">🛵 توصيل مع مندوب</button></div></div>
