@@ -84,7 +84,7 @@ function renderMenu(){
     return `<div id="sec-${i}"><div class="sec-t">${CAT_ICON[c]||''} ${esc(c)} <small>${items.length} صنف</small></div><div class="grid">${items.map(m=>{
       const out=!m.available;
       return `<div class="item ${out?'out':''}" onclick="openItem('${esc(m.id)}')"><div class="pic">${picHTML(m)}${m.badge?`<span class="badge">${esc(m.badge)}</span>`:''}${out?'<div class="soldout">نفدت الكمية 💔</div>':''}</div>
-      <div class="body"><h4>${esc(m.name)}</h4><div class="desc">${esc(m.desc)}</div><div class="row"><span class="price">${money(m.price)}</span><button class="add" ${out?'disabled':''} aria-label="أضف">+</button></div></div></div>`;
+      <div class="body"><h4>${esc(m.name)}</h4><div class="desc">${esc(m.desc)}</div><div class="row"><span class="price">${minPrice(m)!=null?`<small style="font-weight:400;color:var(--muted)">من</small> ${money(minPrice(m))}`:money(m.price)}</span><button class="add" ${out?'disabled':''} aria-label="أضف">+</button></div></div></div>`;
     }).join('')}</div></div>`;
   }).join('');
 }
@@ -96,29 +96,34 @@ function pickMood(id,b){ document.querySelectorAll('.moods button').forEach(x=>x
   $('moodRes').innerHTML = `${imgSrc(it)?`<img src="${imgSrc(it)}">`:''}<span>${m.msg}</span><button onclick="openItem('${id}')">جربها ←</button>`; $('moodRes').classList.add('show'); }
 
 /* ---------- item ---------- */
+function variantsOf(m){ return (m.variants && m.variants.length) ? m.variants : (m.flavors||[]).map(n=>({n, s:null, l:null})); }
+function curVariant(){ return cur && variantsOf(cur.m).find(v=>v.n===cur.flavor); }
+function minPrice(m){ const ps=variantsOf(m).map(v=>v.s).filter(x=>x!=null); return ps.length ? Math.min(...ps) : null; }
 function optsFor(m, g){ return D.options.filter(o=>o.group===g && !o.exclude.includes(m.id)); }
 function openItem(id){ const m=byId(id); if(!m||!m.available) return;
-  cur = {m, sel:{}, flavor: m.flavors && m.flavors.length ? m.flavors[0] : null, qty:1};
+  const vs=variantsOf(m); cur = {m, sel:{}, flavor: vs.length ? vs[0].n : null, size:'صغير', qty:1};
   drawItem(); openOv('ovItem'); }
 function toggleOpt(g, name){ const multi=!REQUIRED.includes(g); const s=cur.sel[g]||[];
   if (multi) cur.sel[g] = s.includes(name) ? s.filter(x=>x!==name) : [...s, name]; else cur.sel[g]=[name];
   drawItem(); }
 function choices(){ return Object.values(cur.sel).flat(); }
-function curPrice(){ const m=cur.m; let p=m.price; (GROUPS[m.opt]||[]).forEach(g=>optsFor(m,g).forEach(o=>{ if((cur.sel[g]||[]).includes(o.name)) p+=o.price; })); return p; }
+function curPrice(){ const m=cur.m, v=curVariant(); let p = (v && v.s!=null) ? ((v.l!=null && cur.size==='كبير') ? v.l : v.s) : m.price; (GROUPS[m.opt]||[]).forEach(g=>optsFor(m,g).forEach(o=>{ if((cur.sel[g]||[]).includes(o.name)) p+=o.price; })); return p; }
 function drawItem(){ const c=cur, m=c.m; let o='';
-  if (m.flavors && m.flavors.length) o += `<div class="opt"><span class="t">النكهة</span><div class="chips">${m.flavors.map(f=>`<button class="${c.flavor===f?'on':''}" onclick="cur.flavor='${esc(f)}';drawItem()">${esc(f)}</button>`).join('')}</div></div>`;
+  const vs=variantsOf(m);
+  if (vs.length){ o += `<div class="opt"><span class="t">النكهة</span><div class="chips">${vs.map(v=>`<button class="${c.flavor===v.n?'on':''}" onclick="cur.flavor='${esc(v.n)}';drawItem()">${esc(v.n)}${v.s!=null?` <small>${v.l!=null?'من '+v.s:v.s+' ر.س'}</small>`:''}</button>`).join('')}</div></div>`;
+    const v=curVariant(); if (v && v.s!=null && v.l!=null) o += `<div class="opt"><span class="t">الحجم</span><div class="chips">${[['صغير',v.s],['كبير',v.l]].map(([n,p])=>`<button class="${c.size===n?'on':''}" onclick="cur.size='${n}';drawItem()">${n} <small>${p} ر.س</small></button>`).join('')}</div></div>`; }
   (GROUPS[m.opt]||[]).forEach(g=>{ const os=optsFor(m,g); if(!os.length) return;
     o += `<div class="opt"><span class="t">${esc(g)} ${REQUIRED.includes(g)?'<em>* إلزامي</em>':''}</span><div class="chips">${os.map(x=>`<button class="${(c.sel[g]||[]).includes(x.name)?'on':''}" onclick="toggleOpt('${esc(g)}','${esc(x.name)}')">${esc(x.name)} ${x.price?`<small>+${x.price}</small>`:''}</button>`).join('')}</div></div>`; });
   const missing = (GROUPS[m.opt]||[]).filter(g=>REQUIRED.includes(g) && optsFor(m,g).length && !(c.sel[g]||[]).length);
   const s = imgSrc(m);
   $('itemSheet').innerHTML = `<div class="sheet-h"><b>${o?'عدّل طلبك ✨':'أضف للسلة'}</b><button class="x" onclick="closeOv('ovItem')">×</button></div>
-  <div class="ihead">${s?`<img src="${s}">`:`<div style="width:110px;height:110px;border-radius:18px;display:grid;place-items:center;font-size:50px;background:var(--pink-l)">${ID_ICON[m.id]||PH_ICON[m.cat]||'🍵'}</div>`}<div><h3>${esc(m.name)}</h3><p>${esc(m.desc)}</p><p class="price" style="margin-top:6px">${money(m.price)}</p>${m.pickupOnly?'<p style="color:var(--green);font-size:12px;margin-top:4px">🏡 متوفر للاستلام فقط</p>':''}</div></div>
+  <div class="ihead">${s?`<img src="${s}">`:`<div style="width:110px;height:110px;border-radius:18px;display:grid;place-items:center;font-size:50px;background:var(--pink-l)">${ID_ICON[m.id]||PH_ICON[m.cat]||'🍵'}</div>`}<div><h3>${esc(m.name)}</h3><p>${esc(m.desc)}</p><p class="price" style="margin-top:6px">${minPrice(m)!=null?"من "+money(minPrice(m)):money(m.price)}</p>${m.pickupOnly?'<p style="color:var(--green);font-size:12px;margin-top:4px">🏡 متوفر للاستلام فقط</p>':''}</div></div>
   ${o}
   <div class="opt" style="display:flex;justify-content:space-between;align-items:center"><span class="t" style="margin:0">الكمية</span><div class="qty"><button onclick="cur.qty=Math.max(1,cur.qty-1);drawItem()">−</button><b>${c.qty}</b><button onclick="cur.qty=Math.min(20,cur.qty+1);drawItem()">+</button></div></div>
   <button class="big" ${missing.length?'disabled':''} onclick="addToCart()"><span>${missing.length?'اختر '+missing.join(' و'):'أضف للسلة'}</span><span>${money(curPrice()*c.qty)}</span></button>`; }
-function addToCart(){ const c=cur, m=c.m, ch=choices(), opts=[c.flavor,...ch].filter(Boolean).join(' • ');
+function addToCart(){ const c=cur, m=c.m, ch=choices(), v=curVariant(), sz=(v&&v.s!=null&&v.l!=null)?c.size:null, opts=[c.flavor,sz,...ch].filter(Boolean).join(' • ');
   const ex = cart.find(x=>x.id===m.id && x.opts===opts);
-  if (ex) ex.qty += c.qty; else cart.push({id:m.id, name:m.name, opts, choices:ch, flavor:c.flavor, qty:c.qty, price:curPrice(), img:imgSrc(m), cat:m.cat, pickupOnly:!!m.pickupOnly});
+  if (ex) ex.qty += c.qty; else cart.push({id:m.id, name:m.name, opts, choices:ch, flavor:c.flavor, size:sz, qty:c.qty, price:curPrice(), img:imgSrc(m), cat:m.cat, pickupOnly:!!m.pickupOnly});
   closeOv('ovItem'); updCart(); toast(`انضاف ${m.name} للسلة 🌸`);
   const b=$('cartBtn'); b.classList.remove('bump'); void b.offsetWidth; b.classList.add('bump'); }
 function updCart(){ $('cartN').textContent = cart.reduce((a,b)=>a+b.qty,0); }
@@ -187,7 +192,7 @@ async function placeOrder(){
   co.sending=true; drawCart();
   try {
     const r = await apiPost({action:'order', name, phone, method:co.method, zone:co.method==='delivery'?co.zone:'', address:F.fAddr||'', slot:(co.day?'بكرة ':'اليوم ')+co.slot, note:F.fNote||'', useReward:co.useReward,
-      items: cart.map(c=>({id:c.id, qty:c.qty, choices:c.choices, flavor:c.flavor})), receipt: co.receipt});
+      items: cart.map(c=>({id:c.id, qty:c.qty, choices:c.choices, flavor:c.flavor, size:c.size})), receipt: co.receipt});
     myPhone=phone; LS.set('phone',phone); myStamps=r.stamps; LS.set('stamps',{p:phone,s:r.stamps});
     const order = {no:r.no, phone, t:Date.now(), name, slot:(co.day?'بكرة ':'اليوم ')+co.slot, method:co.method, zone:co.zone, total:r.total, added:r.added, status:'جديد'};
     LS.set('lastOrder', order);

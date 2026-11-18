@@ -69,9 +69,10 @@ function getMenuData() {
   const menu = rows(SH.MENU).map(r => ({
     id: String(r[0]).trim(), cat: String(r[1]).trim(), name: r[2], price: Number(r[3]) || 0,
     desc: r[4], img: String(r[5] || '').trim(), available: yes(r[6]),
-    opt: String(r[7] || '').trim(), badge: r[8] || '', flavors: String(r[9] || '').split(/[,،]/).map(x => x.trim()).filter(Boolean),
+    opt: String(r[7] || '').trim(), badge: r[8] || '', variants: parseVariants(r[9]),
     pickupOnly: yes(r[10])
   }));
+  menu.forEach(m => m.flavors = m.variants.map(v => v.n));
   const options = rows(SH.OPTIONS).map(r => ({
     group: String(r[0]).trim(), name: String(r[1]).trim(), price: Number(r[2]) || 0,
     exclude: String(r[3] || '').split(/[,،]/).map(x => x.trim()).filter(Boolean)
@@ -90,6 +91,15 @@ function getMenuData() {
       notice: s['تنبيه أعلى الصفحة'] || ''
     }
   };
+}
+
+// النكهات: "اسم" أو "اسم:سعر" أو "اسم:سعر صغير:سعر كبير" — بينها فاصلة
+function parseVariants(v) {
+  return String(v || '').split(/[,،]/).map(x => x.trim()).filter(Boolean).map(x => {
+    const p = x.split(/[:：]/).map(y => y.trim());
+    const num = y => (y === undefined || y === '' || isNaN(Number(y))) ? null : Number(y);
+    return { n: p[0], s: num(p[1]), l: num(p[2]) };
+  });
 }
 
 function timeStr(v) {
@@ -143,10 +153,17 @@ function placeOrder(b) {
       if ((g === 'الحليب' || g === 'الحلاوة') && chosen.length !== 1) throw new Error('اختر ' + g + ' لـ ' + m.name);
       chosen.forEach(o => { price += o.price; picked.push(o.name); });
     });
-    if (m.flavors.length) {
+    if (m.variants.length) {
       const f = String(it.flavor || '');
-      if (!m.flavors.includes(f)) throw new Error('اختر النكهة لـ ' + m.name);
-      picked.unshift(f);
+      const v = m.variants.find(x => x.n === f);
+      if (!v) throw new Error('اختر النكهة لـ ' + m.name);
+      let label = f;
+      if (v.s !== null) {
+        const big = v.l !== null && it.size === 'كبير';
+        price += (big ? v.l : v.s) - m.price;
+        if (v.l !== null) label += ' • ' + (big ? 'كبير' : 'صغير');
+      }
+      picked.unshift(label);
     }
     sub += price * qty;
     lines.push(qty + '× ' + m.name + (picked.length ? ' (' + picked.join(' • ') + ')' : '') + ' = ' + price * qty);
@@ -262,8 +279,8 @@ function setup() {
     ['hibiscus','مشروبات باردة','آيس كركديه',23,'كركديه بارد منعش يقدم مع الثلج والليمون.','hibiscus.jpg','نعم','','','',''],
     ['hotmatcha','مشروبات ساخنة','هوت ماتشا',20,'ماتشا حارة بالحليب تعلوها رغوة ناعمة ورشة ماتشا.','hotmatcha.jpg','نعم','حار','استلام فقط 🏡','','نعم'],
     ['hotchoc','مشروبات ساخنة','هوت شوكلت',18,'شوكولاتة حارة غنية مع كريمة ومارشملو محمّص.','hotchoc.jpg','نعم','حار','استلام فقط 🏡','','نعم'],
-    ['cookies','حلى ومخبوزات','كوكيز',12,'كوكيز طرية بنكهات مختلفة، تقدر تطلبها حارة 🔥','cookies.jpg','نعم','كوكيز','','دبل شوكولاتة, ريد فيلفت, كوكيز التوت, شوكولاتة داكنة',''],
-    ['berrydessert','حلى ومخبوزات','حلى التوت البارد',18,'حلى بارد بطبقات الكيك والكريمة وصوص التوت، تعلوه طبقة شوكولاتة.','berrydessert.jpg','نعم','','','',''],
+    ['cookies','حلى ومخبوزات','كوكيز',5,'كوكيز طرية بنكهات مختلفة وحجمين، تقدر تطلبها حارة 🔥','cookies.jpg','نعم','كوكيز','','كلاسيك:6:12, سموروز:12, ريد فيلفت:5:10, كيندر:5:10, لوتس:5:10, بستاشيو:5:10, جالكسي:5:10, رافايلو:6:10, أوريو:6:12, بودينغ:16:25',''],
+    ['berrydessert','حلى ومخبوزات','حلى التوت البارد',19,'حلى بارد بطبقات الكيك والكريمة وصوص التوت، تعلوه طبقة شوكولاتة.','berrydessert.jpg','نعم','','','',''],
     ['x-cream','الإضافات','كريمة',2,'كريمة إضافية مع طلبك.','','نعم','','','',''],
     ['x-icecream','الإضافات','آيس كريم',3,'سكوب آيس كريم مع طلبك.','','نعم','','','',''],
     ['x-double','الإضافات','دبل ماتشا',5,'شوت ماتشا إضافي.','','نعم','','','',''],

@@ -11,7 +11,7 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "ماتشا",
    "badge": "",
-   "flavors": [],
+   "variants": [],
    "pickupOnly": false
   },
   {
@@ -24,7 +24,7 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "ماتشا",
    "badge": "الأكثر طلباً",
-   "flavors": [],
+   "variants": [],
    "pickupOnly": false
   },
   {
@@ -37,7 +37,7 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "ماتشا",
    "badge": "",
-   "flavors": [],
+   "variants": [],
    "pickupOnly": false
   },
   {
@@ -50,7 +50,7 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "ماتشا",
    "badge": "",
-   "flavors": [],
+   "variants": [],
    "pickupOnly": false
   },
   {
@@ -63,7 +63,7 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "ماتشا",
    "badge": "",
-   "flavors": [],
+   "variants": [],
    "pickupOnly": false
   },
   {
@@ -76,7 +76,7 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "ماتشا",
    "badge": "",
-   "flavors": [],
+   "variants": [],
    "pickupOnly": false
   },
   {
@@ -89,7 +89,7 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "ماتشا",
    "badge": "",
-   "flavors": [],
+   "variants": [],
    "pickupOnly": false
   },
   {
@@ -102,7 +102,7 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "ماتشا",
    "badge": "توقيع زهرة 🌸",
-   "flavors": [],
+   "variants": [],
    "pickupOnly": false
   },
   {
@@ -115,7 +115,7 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "ماتشا",
    "badge": "",
-   "flavors": [],
+   "variants": [],
    "pickupOnly": false
   },
   {
@@ -128,7 +128,7 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "ماتشا",
    "badge": "",
-   "flavors": [],
+   "variants": [],
    "pickupOnly": false
   },
   {
@@ -141,7 +141,7 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "ماتشا",
    "badge": "",
-   "flavors": [],
+   "variants": [],
    "pickupOnly": false
   },
   {
@@ -154,7 +154,7 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "ماتشا",
    "badge": "",
-   "flavors": [],
+   "variants": [],
    "pickupOnly": false
   },
   {
@@ -167,7 +167,7 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "ماتشا",
    "badge": "",
-   "flavors": [],
+   "variants": [],
    "pickupOnly": false
   },
   {
@@ -180,7 +180,7 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "ماتشا",
    "badge": "للمناسبات 🎂",
-   "flavors": [],
+   "variants": [],
    "pickupOnly": false
   },
   {
@@ -193,7 +193,7 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "",
    "badge": "",
-   "flavors": [],
+   "variants": [],
    "pickupOnly": false
   },
   {
@@ -206,7 +206,7 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "ماتشا",
    "badge": "",
-   "flavors": [],
+   "variants": [],
    "pickupOnly": false
   },
   {
@@ -219,7 +219,7 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "ماتشا",
    "badge": "",
-   "flavors": [],
+   "variants": [],
    "pickupOnly": false
   },
   {
@@ -232,7 +232,7 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "",
    "badge": "",
-   "flavors": [],
+   "variants": [],
    "pickupOnly": false
   },
   {
@@ -245,7 +245,7 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "",
    "badge": "",
-   "flavors": [],
+   "variants": [],
    "pickupOnly": false
   },
   {
@@ -258,7 +258,7 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "",
    "badge": "",
-   "flavors": [],
+   "variants": [],
    "pickupOnly": false
   },
   {
@@ -271,7 +271,7 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "حار",
    "badge": "استلام فقط 🏡",
-   "flavors": [],
+   "variants": [],
    "pickupOnly": true
   },
   {
@@ -284,24 +284,70 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "حار",
    "badge": "استلام فقط 🏡",
-   "flavors": [],
+   "variants": [],
    "pickupOnly": true
   },
   {
    "id": "cookies",
    "cat": "حلى ومخبوزات",
    "name": "كوكيز",
-   "price": 12,
-   "desc": "كوكيز طرية بنكهات مختلفة، تقدر تطلبها حارة 🔥",
+   "price": 5,
+   "desc": "كوكيز طرية بنكهات مختلفة وحجمين، تقدر تطلبها حارة 🔥",
    "img": "cookies.jpg",
    "available": true,
    "opt": "كوكيز",
    "badge": "",
-   "flavors": [
-    "دبل شوكولاتة",
-    "ريد فيلفت",
-    "كوكيز التوت",
-    "شوكولاتة داكنة"
+   "variants": [
+    {
+     "n": "كلاسيك",
+     "s": 6,
+     "l": 12
+    },
+    {
+     "n": "سموروز",
+     "s": 12,
+     "l": null
+    },
+    {
+     "n": "ريد فيلفت",
+     "s": 5,
+     "l": 10
+    },
+    {
+     "n": "كيندر",
+     "s": 5,
+     "l": 10
+    },
+    {
+     "n": "لوتس",
+     "s": 5,
+     "l": 10
+    },
+    {
+     "n": "بستاشيو",
+     "s": 5,
+     "l": 10
+    },
+    {
+     "n": "جالكسي",
+     "s": 5,
+     "l": 10
+    },
+    {
+     "n": "رافايلو",
+     "s": 6,
+     "l": 10
+    },
+    {
+     "n": "أوريو",
+     "s": 6,
+     "l": 12
+    },
+    {
+     "n": "بودينغ",
+     "s": 16,
+     "l": 25
+    }
    ],
    "pickupOnly": false
   },
@@ -309,13 +355,13 @@ window.FALLBACK_DATA={
    "id": "berrydessert",
    "cat": "حلى ومخبوزات",
    "name": "حلى التوت البارد",
-   "price": 18,
+   "price": 19,
    "desc": "حلى بارد بطبقات الكيك والكريمة وصوص التوت، تعلوه طبقة شوكولاتة.",
    "img": "berrydessert.jpg",
    "available": true,
    "opt": "",
    "badge": "",
-   "flavors": [],
+   "variants": [],
    "pickupOnly": false
   },
   {
@@ -328,7 +374,7 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "",
    "badge": "",
-   "flavors": [],
+   "variants": [],
    "pickupOnly": false
   },
   {
@@ -341,7 +387,7 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "",
    "badge": "",
-   "flavors": [],
+   "variants": [],
    "pickupOnly": false
   },
   {
@@ -354,7 +400,7 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "",
    "badge": "",
-   "flavors": [],
+   "variants": [],
    "pickupOnly": false
   },
   {
@@ -367,7 +413,7 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "",
    "badge": "",
-   "flavors": [],
+   "variants": [],
    "pickupOnly": false
   }
  ],
