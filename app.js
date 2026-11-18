@@ -157,13 +157,16 @@ function _drawCart(){
   <textarea class="fld" id="fNote" rows="2" placeholder="ملاحظة (اختياري)"></textarea>
   ${canReward?`<label class="reward"><input type="checkbox" ${co.useReward?'checked':''} onchange="co.useReward=this.checked;drawCart()"> 🎁 عندك مشروب مجاني من بطاقة الولاء! استخدمه الحين</label>`:(LIVE&&myPhone&&drinksN?`<div class="reward">🎟️ عندك ${stamps} من ${goal} أختام — هالطلب يضيف ${drinksN}</div>`:'')}
   <div class="sum"><div><span>المجموع</span><span>${money(sub)}</span></div>${del?`<div><span>التوصيل (${esc(co.zone)})</span><span>${money(del)}</span></div>`:''}${disc?`<div class="disc"><span>🎁 مشروب مجاني</span><span>−${money(disc)}</span></div>`:''}<div class="tot"><span>الإجمالي</span><span>${money(total)}</span></div></div>
-  <div class="bank">💳 <b>الدفع بالتحويل البنكي</b><br>${s.bank?`البنك: ${esc(s.bank)}<br>`:''}${s.holder?`باسم: ${esc(s.holder)}<br>`:''}${s.iban?`الآيبان: <b dir="ltr" style="user-select:all">${esc(s.iban)}</b> <button onclick="copyIban()" style="background:#fff;border-radius:8px;padding:2px 8px;font-size:11px">نسخ</button><br>`:''}حوّل المبلغ وارفع صورة الإيصال 👇</div>
+  ${(()=>{ const isIban=/^SA/i.test(String(s.iban||'').replace(/\s/g,'')); const cp=`<button onclick="copyIban()" style="background:#fff;border-radius:8px;padding:2px 8px;font-size:11px">نسخ</button>`;
+    return isIban
+    ? `<div class="bank">💳 <b>الدفع بالتحويل البنكي</b><br>${s.bank?`البنك: ${esc(s.bank)}<br>`:''}${s.holder?`باسم: ${esc(s.holder)}<br>`:''}${s.iban?`الآيبان: <b dir="ltr" style="user-select:all">${esc(s.iban)}</b> ${cp}<br>`:''}حوّل المبلغ وارفع صورة الإيصال 👇</div>`
+    : `<div class="bank">💳 <b>الدفع بالتحويل</b><br>${s.bank?`حوّل على <b>${esc(s.bank)}</b>${s.iban?' على الرقم:':''}<br>`:''}${s.iban?`<b dir="ltr" style="user-select:all;font-size:15px">${esc(s.iban)}</b> ${cp}<br>`:''}${s.holder?`باسم: ${esc(s.holder)}<br>`:''}وبعدها ارفع صورة الإيصال 👇</div>`; })()}
   <label class="upload ${co.receipt?'ok':''}">${co.receipt?'✅ تم إرفاق الإيصال — '+esc(co.receiptName):'📎 ارفع صورة إيصال التحويل'}<input type="file" accept="image/*,application/pdf" hidden onchange="pickReceipt(this.files[0])"></label>
   ${pOnly.length?`<div class="err">🏡 ${pOnly.map(c=>esc(c.name)).join('، ')} متوفر للاستلام فقط — اختر استلام أو احذفه من السلة</div>`:''}
   ${co.err?`<div class="err">${esc(co.err)}</div>`:''}
   <button class="big" ${!co.slot||!co.receipt||co.sending||!s.open||pOnly.length?'disabled':''} onclick="placeOrder()"><span>${co.sending?'<span class="spin"></span> جاري الإرسال…':!s.open?'الطلبات مقفلة':!co.slot?'اختر الوقت':!co.receipt?'ارفع الإيصال':'أكّد الطلب'}</span><span>${money(total)}</span></button>`;
 }
-function copyIban(){ try{ navigator.clipboard.writeText(D.settings.iban); toast('تم نسخ الآيبان ✓'); }catch(e){} }
+function copyIban(){ try{ navigator.clipboard.writeText(D.settings.iban); toast('تم النسخ ✓'); }catch(e){} }
 function phoneChanged(v){ const p=normPhone(v); if(p.length===10 && p!==myPhone){ myPhone=p; LS.set('phone',p); myStamps=null; refreshLoyalty().then(()=>drawCart()); } }
 async function pickReceipt(file){ if(!file) return;
   try {
