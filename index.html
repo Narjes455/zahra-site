@@ -12,14 +12,36 @@
 <link rel="icon" href="img/logo.jpg">
 <link rel="apple-touch-icon" href="img/logo.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;600;700&family=Playfair+Display:wght@600&family=Lora:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div id="intro">
-  <div class="flower"><svg viewBox="0 0 200 200" id="flowerSvg"></svg></div>
-  <img class="intro-logo" src="img/logo.jpg" alt="Zahra Matcha">
+  <svg class="zlogo" viewBox="0 0 330 315" aria-label="Zahra Matcha">
+    <defs><clipPath id="zc1"><rect x="20" y="170" height="80" width="0"><animate attributeName="width" from="0" to="300" begin="2.1s" dur=".9s" fill="freeze"/></rect></clipPath>
+    <clipPath id="zc2"><rect x="20" y="245" height="60" width="0"><animate attributeName="width" from="0" to="300" begin="2.6s" dur=".8s" fill="freeze"/></rect></clipPath></defs>
+    <rect class="card" x="10" y="8" width="310" height="300" rx="34"/>
+    <g fill="none" stroke="#3f6e2a" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+      <path pathLength="1" class="d" style="--d:.45s" d="M70,102 Q74,166 132,176 L200,176 Q256,166 262,102"/>
+      <path pathLength="1" class="d" style="--d:.45s" d="M70,102 Q166,130 262,102"/>
+      <path pathLength="1" class="d" style="--d:.7s" d="M120,177 Q166,186 212,177"/>
+      <path pathLength="1" class="d leaf" style="--d:1.2s" d="M206,112 C202,86 222,66 246,58 C250,84 236,106 206,112 Z"/>
+      <path pathLength="1" class="d" style="--d:1.35s" d="M208,110 Q228,86 245,61"/>
+      <path pathLength="1" class="d" style="--d:1.4s" d="M196,116 C190,100 196,90 206,84"/>
+      <g class="bloom"><path pathLength="1" class="d zp" style="--d:1.0s" transform="rotate(0 161 76)" d="M161,70 C150,62 140,44 150,30 C154,26 158,30 161,34 C164,30 168,26 172,30 C182,44 172,62 161,70 Z"/><path pathLength="1" class="d zp" style="--d:1.12s" transform="rotate(72 161 76)" d="M161,70 C150,62 140,44 150,30 C154,26 158,30 161,34 C164,30 168,26 172,30 C182,44 172,62 161,70 Z"/><path pathLength="1" class="d zp" style="--d:1.24s" transform="rotate(144 161 76)" d="M161,70 C150,62 140,44 150,30 C154,26 158,30 161,34 C164,30 168,26 172,30 C182,44 172,62 161,70 Z"/><path pathLength="1" class="d zp" style="--d:1.3599999999999999s" transform="rotate(216 161 76)" d="M161,70 C150,62 140,44 150,30 C154,26 158,30 161,34 C164,30 168,26 172,30 C182,44 172,62 161,70 Z"/><path pathLength="1" class="d zp" style="--d:1.48s" transform="rotate(288 161 76)" d="M161,70 C150,62 140,44 150,30 C154,26 158,30 161,34 C164,30 168,26 172,30 C182,44 172,62 161,70 Z"/>
+        <circle pathLength="1" class="d zp" style="--d:1.6s" cx="161" cy="76" r="9"/>
+        <circle pathLength="1" class="d" style="--d:1.7s" cx="161" cy="76" r="4"/><line pathLength="1" class="d" style="--d:1.75s" x1="161" y1="76" x2="175.0" y2="76.0"/><line pathLength="1" class="d" style="--d:1.75s" x1="161" y1="76" x2="171.7" y2="85.0"/><line pathLength="1" class="d" style="--d:1.75s" x1="161" y1="76" x2="163.4" y2="89.8"/><line pathLength="1" class="d" style="--d:1.75s" x1="161" y1="76" x2="154.0" y2="88.1"/><line pathLength="1" class="d" style="--d:1.75s" x1="161" y1="76" x2="147.8" y2="80.8"/><line pathLength="1" class="d" style="--d:1.75s" x1="161" y1="76" x2="147.8" y2="71.2"/><line pathLength="1" class="d" style="--d:1.75s" x1="161" y1="76" x2="154.0" y2="63.9"/><line pathLength="1" class="d" style="--d:1.75s" x1="161" y1="76" x2="163.4" y2="62.2"/><line pathLength="1" class="d" style="--d:1.75s" x1="161" y1="76" x2="171.7" y2="67.0"/>
+      </g>
+    </g>
+    <g fill="#3f6e2a" font-family="'Lora','Playfair Display',serif" font-weight="700" text-anchor="middle">
+      <text x="166" y="236" font-size="62" clip-path="url(#zc1)">Zahra</text>
+      <text x="166" y="288" font-size="40" clip-path="url(#zc2)" letter-spacing="1">Matcha</text>
+    </g>
+    <g class="steam" fill="none" stroke="#9fc27a" stroke-width="2.4" stroke-linecap="round">
+      <path d="M118,92 q-8,-12 0,-24 q8,-12 0,-24"/><path d="M210,40 q-8,-12 0,-24"/>
+    </g>
+  </svg>
   <div class="intro-sub">ماتشا تحضر بحب من البيت ❣️</div>
   <button class="skip" onclick="closeIntro()">ادخل المنيو ←</button>
 </div>

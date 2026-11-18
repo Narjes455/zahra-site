@@ -50,12 +50,9 @@ async function apiPost(body){
 
 /* ---------- intro ---------- */
 (function intro(){
-  let s=''; const c=['#ee719e','#f48aa8','#f7a9c4'];
-  for(let i=0;i<6;i++) s+=`<g class="petal" style="--rot:${i*60}deg;animation-delay:${i*.1}s"><ellipse cx="100" cy="55" rx="28" ry="45" fill="${c[i%3]}" opacity=".92"/></g>`;
-  $('flowerSvg').innerHTML = s + `<g class="core"><circle cx="100" cy="100" r="28" fill="#3f6e2a"/><circle cx="100" cy="100" r="20" fill="#7fa35a"/></g>`;
   for(let i=0;i<14;i++){ const p=document.createElement('span'); p.className='fall'; p.textContent=['🌸','🍵','🍃'][i%3]; p.style.left=Math.random()*100+'%'; p.style.animationDuration=(4+Math.random()*4)+'s'; p.style.animationDelay=(Math.random()*2)+'s'; $('intro').appendChild(p); }
   if (sessionStorage.getItem('zahra_intro')) { $('intro').style.display='none'; }
-  else { setTimeout(closeIntro, 3800); try{sessionStorage.setItem('zahra_intro','1')}catch(e){} }
+  else { setTimeout(closeIntro, 4600); try{sessionStorage.setItem('zahra_intro','1')}catch(e){} }
 })();
 function closeIntro(){ $('intro').classList.add('hide'); }
 
