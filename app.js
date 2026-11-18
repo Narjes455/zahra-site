@@ -20,7 +20,7 @@ const MOODS = [
  {e:'🍰',n:'أبي شي حلو',pick:'brulee',msg:'ماتشا كريم بروليه، حلى ومشروب بكوب واحد ✨'},
  {e:'🎉',n:'عندي مناسبة',pick:'birthday',msg:'الماتشا الاحتفالية 🎂 تكمّل الفرحة'}
 ];
-const GROUPS = {'ماتشا':['الحليب','الحلاوة','إضافات الماتشا'],'كوكيز':['خيارات الكوكيز']};
+const GROUPS = {'ماتشا':['الحليب','الحلاوة','إضافات الماتشا'],'كوكيز':['خيارات الكوكيز'],'حار':['خيارات الحار']};
 const REQUIRED = ['الحليب','الحلاوة'];
 const STEPS = ['جديد','قيد التحضير','جاهز','تم التسليم'];
 
@@ -115,13 +115,13 @@ function drawItem(){ const c=cur, m=c.m; let o='';
   const missing = (GROUPS[m.opt]||[]).filter(g=>REQUIRED.includes(g) && optsFor(m,g).length && !(c.sel[g]||[]).length);
   const s = imgSrc(m);
   $('itemSheet').innerHTML = `<div class="sheet-h"><b>${o?'عدّل طلبك ✨':'أضف للسلة'}</b><button class="x" onclick="closeOv('ovItem')">×</button></div>
-  <div class="ihead">${s?`<img src="${s}">`:`<div style="width:110px;height:110px;border-radius:18px;display:grid;place-items:center;font-size:50px;background:var(--pink-l)">${ID_ICON[m.id]||PH_ICON[m.cat]||'🍵'}</div>`}<div><h3>${esc(m.name)}</h3><p>${esc(m.desc)}</p><p class="price" style="margin-top:6px">${money(m.price)}</p></div></div>
+  <div class="ihead">${s?`<img src="${s}">`:`<div style="width:110px;height:110px;border-radius:18px;display:grid;place-items:center;font-size:50px;background:var(--pink-l)">${ID_ICON[m.id]||PH_ICON[m.cat]||'🍵'}</div>`}<div><h3>${esc(m.name)}</h3><p>${esc(m.desc)}</p><p class="price" style="margin-top:6px">${money(m.price)}</p>${m.pickupOnly?'<p style="color:var(--green);font-size:12px;margin-top:4px">🏡 متوفر للاستلام فقط</p>':''}</div></div>
   ${o}
   <div class="opt" style="display:flex;justify-content:space-between;align-items:center"><span class="t" style="margin:0">الكمية</span><div class="qty"><button onclick="cur.qty=Math.max(1,cur.qty-1);drawItem()">−</button><b>${c.qty}</b><button onclick="cur.qty=Math.min(20,cur.qty+1);drawItem()">+</button></div></div>
   <button class="big" ${missing.length?'disabled':''} onclick="addToCart()"><span>${missing.length?'اختر '+missing.join(' و'):'أضف للسلة'}</span><span>${money(curPrice()*c.qty)}</span></button>`; }
 function addToCart(){ const c=cur, m=c.m, ch=choices(), opts=[c.flavor,...ch].filter(Boolean).join(' • ');
   const ex = cart.find(x=>x.id===m.id && x.opts===opts);
-  if (ex) ex.qty += c.qty; else cart.push({id:m.id, name:m.name, opts, choices:ch, flavor:c.flavor, qty:c.qty, price:curPrice(), img:imgSrc(m), cat:m.cat});
+  if (ex) ex.qty += c.qty; else cart.push({id:m.id, name:m.name, opts, choices:ch, flavor:c.flavor, qty:c.qty, price:curPrice(), img:imgSrc(m), cat:m.cat, pickupOnly:!!m.pickupOnly});
   closeOv('ovItem'); updCart(); toast(`انضاف ${m.name} للسلة 🌸`);
   const b=$('cartBtn'); b.classList.remove('bump'); void b.offsetWidth; b.classList.add('bump'); }
 function updCart(){ $('cartN').textContent = cart.reduce((a,b)=>a+b.qty,0); }
@@ -144,6 +144,7 @@ function _drawCart(){
   const [a,b]=hours()[co.method], h=nowH(); let slots='', any=false;
   for (let x=Math.ceil(a*2)/2; x<b-0.01; x+=.5){ const dis = co.day===0 && x<=h+.5; if(!dis) any=true; const l=fmtH(x); if(dis && co.slot===l) co.slot=null; slots += `<button ${dis?'disabled':''} class="${co.slot===l?'on':''}" onclick="co.slot='${l}';drawCart()">${l}</button>`; }
   const drinksN = drinkItems.reduce((a,b)=>a+b.qty,0);
+  const pOnly = co.method==='delivery' ? cart.filter(c=>c.pickupOnly) : [];
   el.innerHTML = `<div class="sheet-h"><b>سلتك 🛍️</b><button class="x" onclick="closeOv('ovCart')">×</button></div>
   ${cart.map((c,i)=>`<div class="cline">${c.img?`<img src="${c.img}">`:`<div style="width:48px;height:48px;border-radius:12px;display:grid;place-items:center;font-size:24px;background:var(--pink-l)">${ID_ICON[c.id]||PH_ICON[c.cat]||'🍵'}</div>`}<div class="d"><b>${esc(c.name)}</b> ×${c.qty}<small>${esc(c.opts)}</small></div><b style="font-size:13px">${money(c.price*c.qty)}</b><button class="x" style="width:28px;height:28px;font-size:14px" onclick="cart.splice(${i},1);updCart();drawCart()">×</button></div>`).join('')}
   <div class="opt" style="margin-top:14px"><span class="t">طريقة الاستلام</span><div class="chips">
@@ -161,8 +162,9 @@ function _drawCart(){
   <div class="sum"><div><span>المجموع</span><span>${money(sub)}</span></div>${del?`<div><span>التوصيل (${esc(co.zone)})</span><span>${money(del)}</span></div>`:''}${disc?`<div class="disc"><span>🎁 مشروب مجاني</span><span>−${money(disc)}</span></div>`:''}<div class="tot"><span>الإجمالي</span><span>${money(total)}</span></div></div>
   <div class="bank">💳 <b>الدفع بالتحويل البنكي</b><br>${s.bank?`البنك: ${esc(s.bank)}<br>`:''}${s.holder?`باسم: ${esc(s.holder)}<br>`:''}${s.iban?`الآيبان: <b dir="ltr" style="user-select:all">${esc(s.iban)}</b> <button onclick="copyIban()" style="background:#fff;border-radius:8px;padding:2px 8px;font-size:11px">نسخ</button><br>`:''}حوّل المبلغ وارفع صورة الإيصال 👇</div>
   <label class="upload ${co.receipt?'ok':''}">${co.receipt?'✅ تم إرفاق الإيصال — '+esc(co.receiptName):'📎 ارفع صورة إيصال التحويل'}<input type="file" accept="image/*,application/pdf" hidden onchange="pickReceipt(this.files[0])"></label>
+  ${pOnly.length?`<div class="err">🏡 ${pOnly.map(c=>esc(c.name)).join('، ')} متوفر للاستلام فقط — اختر استلام أو احذفه من السلة</div>`:''}
   ${co.err?`<div class="err">${esc(co.err)}</div>`:''}
-  <button class="big" ${!co.slot||!co.receipt||co.sending||!s.open?'disabled':''} onclick="placeOrder()"><span>${co.sending?'<span class="spin"></span> جاري الإرسال…':!s.open?'الطلبات مقفلة':!co.slot?'اختر الوقت':!co.receipt?'ارفع الإيصال':'أكّد الطلب'}</span><span>${money(total)}</span></button>`;
+  <button class="big" ${!co.slot||!co.receipt||co.sending||!s.open||pOnly.length?'disabled':''} onclick="placeOrder()"><span>${co.sending?'<span class="spin"></span> جاري الإرسال…':!s.open?'الطلبات مقفلة':!co.slot?'اختر الوقت':!co.receipt?'ارفع الإيصال':'أكّد الطلب'}</span><span>${money(total)}</span></button>`;
 }
 function copyIban(){ try{ navigator.clipboard.writeText(D.settings.iban); toast('تم نسخ الآيبان ✓'); }catch(e){} }
 function phoneChanged(v){ const p=normPhone(v); if(p.length===10 && p!==myPhone){ myPhone=p; LS.set('phone',p); myStamps=null; refreshLoyalty().then(()=>drawCart()); } }

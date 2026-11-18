@@ -11,7 +11,8 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "ماتشا",
    "badge": "",
-   "flavors": []
+   "flavors": [],
+   "pickupOnly": false
   },
   {
    "id": "straw",
@@ -23,7 +24,8 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "ماتشا",
    "badge": "الأكثر طلباً",
-   "flavors": []
+   "flavors": [],
+   "pickupOnly": false
   },
   {
    "id": "mango",
@@ -35,7 +37,8 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "ماتشا",
    "badge": "",
-   "flavors": []
+   "flavors": [],
+   "pickupOnly": false
   },
   {
    "id": "blackberry",
@@ -47,7 +50,8 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "ماتشا",
    "badge": "",
-   "flavors": []
+   "flavors": [],
+   "pickupOnly": false
   },
   {
    "id": "oreo",
@@ -59,7 +63,8 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "ماتشا",
    "badge": "",
-   "flavors": []
+   "flavors": [],
+   "pickupOnly": false
   },
   {
    "id": "pistachio",
@@ -71,7 +76,8 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "ماتشا",
    "badge": "",
-   "flavors": []
+   "flavors": [],
+   "pickupOnly": false
   },
   {
    "id": "lotus",
@@ -83,7 +89,8 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "ماتشا",
    "badge": "",
-   "flavors": []
+   "flavors": [],
+   "pickupOnly": false
   },
   {
    "id": "rose",
@@ -95,7 +102,8 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "ماتشا",
    "badge": "توقيع زهرة 🌸",
-   "flavors": []
+   "flavors": [],
+   "pickupOnly": false
   },
   {
    "id": "rafaello",
@@ -107,7 +115,8 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "ماتشا",
    "badge": "",
-   "flavors": []
+   "flavors": [],
+   "pickupOnly": false
   },
   {
    "id": "dates",
@@ -119,7 +128,8 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "ماتشا",
    "badge": "",
-   "flavors": []
+   "flavors": [],
+   "pickupOnly": false
   },
   {
    "id": "brulee",
@@ -131,7 +141,8 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "ماتشا",
    "badge": "",
-   "flavors": []
+   "flavors": [],
+   "pickupOnly": false
   },
   {
    "id": "cheesecake",
@@ -143,7 +154,8 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "ماتشا",
    "badge": "",
-   "flavors": []
+   "flavors": [],
+   "pickupOnly": false
   },
   {
    "id": "mahmoos",
@@ -155,7 +167,8 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "ماتشا",
    "badge": "",
-   "flavors": []
+   "flavors": [],
+   "pickupOnly": false
   },
   {
    "id": "birthday",
@@ -167,7 +180,8 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "ماتشا",
    "badge": "للمناسبات 🎂",
-   "flavors": []
+   "flavors": [],
+   "pickupOnly": false
   },
   {
    "id": "diy",
@@ -179,7 +193,8 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "",
    "badge": "",
-   "flavors": []
+   "flavors": [],
+   "pickupOnly": false
   },
   {
    "id": "blue",
@@ -191,7 +206,8 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "ماتشا",
    "badge": "",
-   "flavors": []
+   "flavors": [],
+   "pickupOnly": false
   },
   {
    "id": "taro",
@@ -203,7 +219,8 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "ماتشا",
    "badge": "",
-   "flavors": []
+   "flavors": [],
+   "pickupOnly": false
   },
   {
    "id": "vimto",
@@ -215,7 +232,8 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "",
    "badge": "",
-   "flavors": []
+   "flavors": [],
+   "pickupOnly": false
   },
   {
    "id": "dragon",
@@ -227,7 +245,8 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "",
    "badge": "",
-   "flavors": []
+   "flavors": [],
+   "pickupOnly": false
   },
   {
    "id": "hibiscus",
@@ -239,19 +258,34 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "",
    "badge": "",
-   "flavors": []
+   "flavors": [],
+   "pickupOnly": false
   },
   {
-   "id": "hotlatte",
+   "id": "hotmatcha",
    "cat": "مشروبات ساخنة",
-   "name": "ماتشا لاتيه حار",
+   "name": "هوت ماتشا",
    "price": 20,
-   "desc": "ماتشا دافئة بالحليب.",
-   "img": "",
-   "available": false,
-   "opt": "ماتشا",
-   "badge": "",
-   "flavors": []
+   "desc": "ماتشا حارة بالحليب تعلوها رغوة ناعمة ورشة ماتشا.",
+   "img": "hotmatcha.jpg",
+   "available": true,
+   "opt": "حار",
+   "badge": "استلام فقط 🏡",
+   "flavors": [],
+   "pickupOnly": true
+  },
+  {
+   "id": "hotchoc",
+   "cat": "مشروبات ساخنة",
+   "name": "هوت شوكلت",
+   "price": 18,
+   "desc": "شوكولاتة حارة غنية مع كريمة ومارشملو محمّص.",
+   "img": "hotchoc.jpg",
+   "available": true,
+   "opt": "حار",
+   "badge": "استلام فقط 🏡",
+   "flavors": [],
+   "pickupOnly": true
   },
   {
    "id": "cookies",
@@ -268,7 +302,8 @@ window.FALLBACK_DATA={
     "ريد فيلفت",
     "كوكيز التوت",
     "شوكولاتة داكنة"
-   ]
+   ],
+   "pickupOnly": false
   },
   {
    "id": "berrydessert",
@@ -280,7 +315,8 @@ window.FALLBACK_DATA={
    "available": false,
    "opt": "",
    "badge": "",
-   "flavors": []
+   "flavors": [],
+   "pickupOnly": false
   },
   {
    "id": "x-cream",
@@ -292,7 +328,8 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "",
    "badge": "",
-   "flavors": []
+   "flavors": [],
+   "pickupOnly": false
   },
   {
    "id": "x-icecream",
@@ -304,7 +341,8 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "",
    "badge": "",
-   "flavors": []
+   "flavors": [],
+   "pickupOnly": false
   },
   {
    "id": "x-double",
@@ -316,7 +354,8 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "",
    "badge": "",
-   "flavors": []
+   "flavors": [],
+   "pickupOnly": false
   },
   {
    "id": "x-ice",
@@ -328,7 +367,8 @@ window.FALLBACK_DATA={
    "available": true,
    "opt": "",
    "badge": "",
-   "flavors": []
+   "flavors": [],
+   "pickupOnly": false
   }
  ],
  "options": [
@@ -400,8 +440,7 @@ window.FALLBACK_DATA={
    "name": "آيس كريم",
    "price": 3,
    "exclude": [
-    "mahmoos",
-    "hotlatte"
+    "mahmoos"
    ]
   },
   {
@@ -414,9 +453,7 @@ window.FALLBACK_DATA={
    "group": "إضافات الماتشا",
    "name": "ثلج خارجي",
    "price": 2,
-   "exclude": [
-    "hotlatte"
-   ]
+   "exclude": []
   },
   {
    "group": "خيارات الكوكيز",
@@ -428,6 +465,12 @@ window.FALLBACK_DATA={
    "group": "خيارات الكوكيز",
    "name": "آيس كريم",
    "price": 3,
+   "exclude": []
+  },
+  {
+   "group": "خيارات الحار",
+   "name": "كريمة",
+   "price": 2,
    "exclude": []
   }
  ],
