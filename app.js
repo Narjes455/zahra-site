@@ -9,8 +9,8 @@ const LS = {
 };
 myPhone = LS.get('phone');
 
-const CAT_ICON = {'ماتشا':'🍵','مشروبات باردة':'🧊','مشروبات ساخنة':'☕','حلى ومخبوزات':'🍪','الإضافات':'➕'};
-const PH_ICON = {'مشروبات ساخنة':'☕','حلى ومخبوزات':'🍓','الإضافات':'➕'};
+const CAT_ICON = {'كوكيز':'🍪','ماتشا':'🍵','مشروبات باردة':'🧊','مشروبات ساخنة':'☕','حلى ومخبوزات':'🍪','الإضافات':'➕'};
+const PH_ICON = {'كوكيز':'🍪','مشروبات ساخنة':'☕','حلى ومخبوزات':'🍓','الإضافات':'➕'};
 const ID_ICON = {'x-cream':'🍦','x-icecream':'🍨','x-double':'🍵','x-ice':'🧊'};
 const MOODS = [
  {e:'😴',n:'نعسان',pick:'classic',msg:'ماتشا كلاسيك مع دبل ماتشا ⚡ تصحيك على طول'},
@@ -110,7 +110,7 @@ function choices(){ return Object.values(cur.sel).flat(); }
 function curPrice(){ const m=cur.m, v=curVariant(); let p = (v && v.s!=null) ? ((v.l!=null && cur.size==='كبير') ? v.l : v.s) : m.price; (GROUPS[m.opt]||[]).forEach(g=>optsFor(m,g).forEach(o=>{ if((cur.sel[g]||[]).includes(o.name)) p+=o.price; })); return p; }
 function drawItem(){ const c=cur, m=c.m; let o='';
   const vs=variantsOf(m);
-  if (vs.length){ o += `<div class="opt"><span class="t">النكهة</span><div class="chips">${vs.map(v=>`<button class="${c.flavor===v.n?'on':''}" onclick="cur.flavor='${esc(v.n)}';drawItem()">${esc(v.n)}${v.s!=null?` <small>${v.l!=null?'من '+v.s:v.s+' ر.س'}</small>`:''}</button>`).join('')}</div></div>`;
+  if (vs.length){ const isSize=vs.every(v=>/صغير|كبير|وسط/.test(v.n)); o += `<div class="opt"><span class="t">${isSize?'الحجم':'النكهة'}</span><div class="chips">${vs.map(v=>`<button class="${c.flavor===v.n?'on':''}" onclick="cur.flavor='${esc(v.n)}';drawItem()">${esc(v.n)}${v.s!=null?` <small>${v.l!=null?'من '+v.s:v.s+' ر.س'}</small>`:''}</button>`).join('')}</div></div>`;
     const v=curVariant(); if (v && v.s!=null && v.l!=null) o += `<div class="opt"><span class="t">الحجم</span><div class="chips">${[['صغير',v.s],['كبير',v.l]].map(([n,p])=>`<button class="${c.size===n?'on':''}" onclick="cur.size='${n}';drawItem()">${n} <small>${p} ر.س</small></button>`).join('')}</div></div>`; }
   (GROUPS[m.opt]||[]).forEach(g=>{ const os=optsFor(m,g); if(!os.length) return;
     o += `<div class="opt"><span class="t">${esc(g)} ${REQUIRED.includes(g)?'<em>* إلزامي</em>':''}</span><div class="chips">${os.map(x=>`<button class="${(c.sel[g]||[]).includes(x.name)?'on':''}" onclick="toggleOpt('${esc(g)}','${esc(x.name)}')">${esc(x.name)} ${x.price?`<small>+${x.price}</small>`:''}</button>`).join('')}</div></div>`; });
@@ -167,6 +167,7 @@ function _drawCart(){
     ? `<div class="bank">💳 <b>الدفع بالتحويل البنكي</b><br>${s.bank?`البنك: ${esc(s.bank)}<br>`:''}${s.holder?`باسم: ${esc(s.holder)}<br>`:''}${s.iban?`الآيبان: <b dir="ltr" style="user-select:all">${esc(s.iban)}</b> ${cp}<br>`:''}حوّل المبلغ وارفع صورة الإيصال 👇</div>`
     : `<div class="bank">💳 <b>الدفع بالتحويل</b><br>${s.bank?`حوّل على <b>${esc(s.bank)}</b>${s.iban?' على الرقم:':''}<br>`:''}${s.iban?`<b dir="ltr" style="user-select:all;font-size:15px">${esc(s.iban)}</b> ${cp}<br>`:''}${s.holder?`باسم: ${esc(s.holder)}<br>`:''}وبعدها ارفع صورة الإيصال 👇</div>`; })()}
   <label class="upload ${co.receipt?'ok':''}">${co.receipt?'✅ تم إرفاق الإيصال — '+esc(co.receiptName):'📎 ارفع صورة إيصال التحويل'}<input type="file" accept="image/*,application/pdf" hidden onchange="pickReceipt(this.files[0])"></label>
+  ${cart.some(c=>c.cat==='كوكيز')?`<div class="reward" style="background:var(--pink-l)">⏱️ تجهيز الكوكيز ياخذ من ساعة إلى ساعتين حسب الكمية — اختر وقت يناسب</div>`:''}
   ${pOnly.length?`<div class="err">🏡 ${pOnly.map(c=>esc(c.name)).join('، ')} متوفر للاستلام فقط — اختر استلام أو احذفه من السلة</div>`:''}
   ${co.err?`<div class="err">${esc(co.err)}</div>`:''}
   <button class="big" ${!co.slot||!co.receipt||co.sending||!s.open||pOnly.length?'disabled':''} onclick="placeOrder()"><span>${co.sending?'<span class="spin"></span> جاري الإرسال…':!s.open?'الطلبات مقفلة':!co.slot?'اختر الوقت':!co.receipt?'ارفع الإيصال':'أكّد الطلب'}</span><span>${money(total)}</span></button>`;
@@ -202,12 +203,12 @@ async function placeOrder(){
 }
 function drawTrack(o){
   const idx = Math.max(0, STEPS.indexOf(o.status)), cancelled = o.status==='ملغي';
-  const L=[['📥','استلمنا طلبك'],['🍵','نحضّره'],['🌸','جاهز'],[o.method==='delivery'?'🛵':'🤍',o.method==='delivery'?'وصل':'تم الاستلام']];
+  const L=[['📥','بانتظار القبول'],['🍵','انقبل ونحضّره'],['🌸','جاهز'],[o.method==='delivery'?'🛵':'🤍',o.method==='delivery'?'وصل':'تم الاستلام']];
   $('cartSheet').innerHTML = `<div class="sheet-h"><b>طلبك 💌</b><button class="x" onclick="closeOv('ovCart')">×</button></div>
   <div class="track"><div style="font-size:46px">${cancelled?'⚠️':'🌸'}</div><p style="color:var(--muted);font-size:13px">رقم الطلب</p><div class="num">#${o.no}</div>
   <p style="font-size:14px;margin-top:6px">شكراً ${esc(o.name)}! موعدك <b>${esc(o.slot)}</b> — ${o.method==='delivery'?'توصيل '+esc(o.zone):'استلام'}</p>
   ${o.added?`<p style="font-size:13px;margin-top:8px;color:var(--green)">🎟️ انضاف لك ${o.added} ختم في بطاقة الولاء</p>`:''}
-  ${cancelled?`<p class="err" style="margin-top:14px">تم إلغاء الطلب — تواصل معنا للاستفسار</p>`:`<div class="steps">${L.map((s,i)=>`<div class="step ${i<=idx?'done':''} ${i===idx?'now':''}"><i>${s[0]}</i>${s[1]}</div>`).join('')}</div>
+  ${cancelled?`<p class="err" style="margin-top:14px">نعتذر، ما قدرنا نقبل طلبك هالمرة — تواصل معنا للاستفسار أو استرجاع المبلغ</p>`:`<div class="steps">${L.map((s,i)=>`<div class="step ${i<=idx?'done':''} ${i===idx?'now':''}"><i>${s[0]}</i>${s[1]}</div>`).join('')}</div>
   <p style="font-size:12px;color:var(--muted)">الحالة تتحدث تلقائياً</p>`}
   <button class="big" style="margin-top:16px;justify-content:center" onclick="LS.set('lastOrder',null);closeOv('ovCart');drawCart()">طلب جديد</button></div>`;
 }

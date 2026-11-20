@@ -41,6 +41,7 @@ function doPost(e) {
       case 'order':     return out(placeOrder(body));
       case 'setStatus': checkPin(body.pin); return out(setStatus(body.no, body.status));
       case 'setAvail':  checkPin(body.pin); return out(setAvail(body.id, body.available));
+      case 'setOpen':   checkPin(body.pin); return out(setOpen(body.open));
       default:          return out({ error: 'unknown action' });
     }
   } catch (err) { return out({ error: String(err.message || err) }); }
@@ -221,7 +222,7 @@ function getOrders() {
   return { orders: v.filter(r => r[0] && new Date(r[1]).getTime() > since && r[15] !== 'تم التسليم' && r[15] !== 'ملغي').map(r => ({
     no: r[0], time: r[1], name: r[2], phone: String(r[3]), method: r[4], zone: r[5], address: r[6], slot: r[7],
     items: r[8], total: r[12], receipt: r[13], note: r[14], status: r[15], reward: r[16]
-  })), menu: getMenuData().menu };
+  })), menu: getMenuData().menu, open: yes(getSettings()['استقبال الطلبات']) };
 }
 
 function setStatus(no, status) {
@@ -235,6 +236,12 @@ function setAvail(id, available) {
   const sh = sheet(SH.MENU), v = sh.getDataRange().getValues();
   for (let i = 1; i < v.length; i++) if (String(v[i][0]).trim() === id) { sh.getRange(i + 1, 7).setValue(available ? 'نعم' : 'لا'); return { ok: true }; }
   throw new Error('الصنف غير موجود');
+}
+
+function setOpen(open) {
+  const sh = sheet(SH.SETTINGS), v = sh.getDataRange().getValues();
+  for (let i = 1; i < v.length; i++) if (String(v[i][0]).trim() === 'استقبال الطلبات') { sh.getRange(i + 1, 2).setValue(open ? 'نعم' : 'لا'); return { ok: true, open: !!open }; }
+  throw new Error('إعداد استقبال الطلبات غير موجود');
 }
 
 function checkPin(pin) {
@@ -279,7 +286,16 @@ function setup() {
     ['hibiscus','مشروبات باردة','آيس كركديه',23,'كركديه بارد منعش يقدم مع الثلج والليمون.','hibiscus.jpg','نعم','','','',''],
     ['hotmatcha','مشروبات ساخنة','هوت ماتشا',20,'ماتشا حارة بالحليب تعلوها رغوة ناعمة ورشة ماتشا.','hotmatcha.jpg','نعم','حار','استلام فقط 🏡','','نعم'],
     ['hotchoc','مشروبات ساخنة','هوت شوكلت',18,'شوكولاتة حارة غنية مع كريمة ومارشملو محمّص.','hotchoc.jpg','نعم','حار','استلام فقط 🏡','','نعم'],
-    ['cookies','حلى ومخبوزات','كوكيز',5,'كوكيز طرية بنكهات مختلفة وحجمين، تقدر تطلبها حارة 🔥','cookies.jpg','نعم','كوكيز','','كلاسيك:6:12, سموروز:12, ريد فيلفت:5:10, كيندر:5:10, لوتس:5:10, بستاشيو:5:10, جالكسي:5:10, رافايلو:6:10, أوريو:6:12, بودينغ:16:25',''],
+    ['ck-classic','كوكيز','كلاسيك كوكيز',6,'كوكيز كلاسيكية بقطع الشوكولاتة. ⏱️ التجهيز ساعة إلى ساعتين','cookies.jpg','نعم','كوكيز','','صغير:6, كبير:12',''],
+    ['ck-smores','كوكيز','سموروز كوكيز',12,'كوكيز بالمارشملو والشوكولاتة — حجم واحد. ⏱️ التجهيز ساعة إلى ساعتين','cookies.jpg','نعم','كوكيز','','',''],
+    ['ck-redvelvet','كوكيز','ريد فيلفت كوكيز',5,'كوكيز ريد فيلفت بقطع الشوكولاتة البيضاء. ⏱️ التجهيز ساعة إلى ساعتين','cookies.jpg','نعم','كوكيز','','صغير:5, كبير:10',''],
+    ['ck-kinder','كوكيز','كيندر كوكيز',5,'كوكيز بحشوة الكيندر. ⏱️ التجهيز ساعة إلى ساعتين','cookies.jpg','نعم','كوكيز','','صغير:5, كبير:10',''],
+    ['ck-lotus','كوكيز','لوتس كوكيز',5,'كوكيز بصوص وبسكويت اللوتس. ⏱️ التجهيز ساعة إلى ساعتين','cookies.jpg','نعم','كوكيز','','صغير:5, كبير:10',''],
+    ['ck-pistachio','كوكيز','بستاشيو كوكيز',5,'كوكيز بالفستق. ⏱️ التجهيز ساعة إلى ساعتين','cookies.jpg','نعم','كوكيز','','صغير:5, كبير:10',''],
+    ['ck-galaxy','كوكيز','جالكسي كوكيز',5,'كوكيز بشوكولاتة جالكسي. ⏱️ التجهيز ساعة إلى ساعتين','cookies.jpg','نعم','كوكيز','','صغير:5, كبير:10',''],
+    ['ck-rafaello','كوكيز','رافايلو كوكيز',6,'كوكيز بنكهة الرافايلو وجوز الهند. ⏱️ التجهيز ساعة إلى ساعتين','cookies.jpg','نعم','كوكيز','','صغير:6, كبير:10',''],
+    ['ck-oreo','كوكيز','أوريو كوكيز',6,'كوكيز بقطع الأوريو. ⏱️ التجهيز ساعة إلى ساعتين','cookies.jpg','نعم','كوكيز','','صغير:6, كبير:12',''],
+    ['ck-pudding','كوكيز','بودينغ كوكيز',16,'كوكيز بودينغ طرية وغنية. ⏱️ التجهيز ساعة إلى ساعتين','cookies.jpg','نعم','كوكيز','','صغير:16, كبير:25',''],
     ['berrydessert','حلى ومخبوزات','حلى التوت البارد',19,'حلى بارد بطبقات الكيك والكريمة وصوص التوت، تعلوه طبقة شوكولاتة.','berrydessert.jpg','نعم','','','',''],
     ['x-cream','الإضافات','كريمة',2,'كريمة إضافية مع طلبك.','','نعم','','','',''],
     ['x-icecream','الإضافات','آيس كريم',3,'سكوب آيس كريم مع طلبك.','','نعم','','','',''],

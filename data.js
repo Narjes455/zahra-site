@@ -288,65 +288,230 @@ window.FALLBACK_DATA={
    "pickupOnly": true
   },
   {
-   "id": "cookies",
-   "cat": "حلى ومخبوزات",
-   "name": "كوكيز",
-   "price": 5,
-   "desc": "كوكيز طرية بنكهات مختلفة وحجمين، تقدر تطلبها حارة 🔥",
+   "id": "ck-classic",
+   "cat": "كوكيز",
+   "name": "كلاسيك كوكيز",
+   "price": 6,
+   "desc": "كوكيز كلاسيكية بقطع الشوكولاتة. ⏱️ التجهيز ساعة إلى ساعتين",
    "img": "cookies.jpg",
    "available": true,
    "opt": "كوكيز",
    "badge": "",
    "variants": [
     {
-     "n": "كلاسيك",
+     "n": "صغير",
      "s": 6,
-     "l": 12
-    },
-    {
-     "n": "سموروز",
-     "s": 12,
      "l": null
     },
     {
-     "n": "ريد فيلفت",
+     "n": "كبير",
+     "s": 12,
+     "l": null
+    }
+   ],
+   "pickupOnly": false
+  },
+  {
+   "id": "ck-smores",
+   "cat": "كوكيز",
+   "name": "سموروز كوكيز",
+   "price": 12,
+   "desc": "كوكيز بالمارشملو والشوكولاتة — حجم واحد. ⏱️ التجهيز ساعة إلى ساعتين",
+   "img": "cookies.jpg",
+   "available": true,
+   "opt": "كوكيز",
+   "badge": "",
+   "variants": [],
+   "pickupOnly": false
+  },
+  {
+   "id": "ck-redvelvet",
+   "cat": "كوكيز",
+   "name": "ريد فيلفت كوكيز",
+   "price": 5,
+   "desc": "كوكيز ريد فيلفت بقطع الشوكولاتة البيضاء. ⏱️ التجهيز ساعة إلى ساعتين",
+   "img": "cookies.jpg",
+   "available": true,
+   "opt": "كوكيز",
+   "badge": "",
+   "variants": [
+    {
+     "n": "صغير",
      "s": 5,
-     "l": 10
+     "l": null
     },
     {
-     "n": "كيندر",
+     "n": "كبير",
+     "s": 10,
+     "l": null
+    }
+   ],
+   "pickupOnly": false
+  },
+  {
+   "id": "ck-kinder",
+   "cat": "كوكيز",
+   "name": "كيندر كوكيز",
+   "price": 5,
+   "desc": "كوكيز بحشوة الكيندر. ⏱️ التجهيز ساعة إلى ساعتين",
+   "img": "cookies.jpg",
+   "available": true,
+   "opt": "كوكيز",
+   "badge": "",
+   "variants": [
+    {
+     "n": "صغير",
      "s": 5,
-     "l": 10
+     "l": null
     },
     {
-     "n": "لوتس",
+     "n": "كبير",
+     "s": 10,
+     "l": null
+    }
+   ],
+   "pickupOnly": false
+  },
+  {
+   "id": "ck-lotus",
+   "cat": "كوكيز",
+   "name": "لوتس كوكيز",
+   "price": 5,
+   "desc": "كوكيز بصوص وبسكويت اللوتس. ⏱️ التجهيز ساعة إلى ساعتين",
+   "img": "cookies.jpg",
+   "available": true,
+   "opt": "كوكيز",
+   "badge": "",
+   "variants": [
+    {
+     "n": "صغير",
      "s": 5,
-     "l": 10
+     "l": null
     },
     {
-     "n": "بستاشيو",
+     "n": "كبير",
+     "s": 10,
+     "l": null
+    }
+   ],
+   "pickupOnly": false
+  },
+  {
+   "id": "ck-pistachio",
+   "cat": "كوكيز",
+   "name": "بستاشيو كوكيز",
+   "price": 5,
+   "desc": "كوكيز بالفستق. ⏱️ التجهيز ساعة إلى ساعتين",
+   "img": "cookies.jpg",
+   "available": true,
+   "opt": "كوكيز",
+   "badge": "",
+   "variants": [
+    {
+     "n": "صغير",
      "s": 5,
-     "l": 10
+     "l": null
     },
     {
-     "n": "جالكسي",
+     "n": "كبير",
+     "s": 10,
+     "l": null
+    }
+   ],
+   "pickupOnly": false
+  },
+  {
+   "id": "ck-galaxy",
+   "cat": "كوكيز",
+   "name": "جالكسي كوكيز",
+   "price": 5,
+   "desc": "كوكيز بشوكولاتة جالكسي. ⏱️ التجهيز ساعة إلى ساعتين",
+   "img": "cookies.jpg",
+   "available": true,
+   "opt": "كوكيز",
+   "badge": "",
+   "variants": [
+    {
+     "n": "صغير",
      "s": 5,
-     "l": 10
+     "l": null
     },
     {
-     "n": "رافايلو",
+     "n": "كبير",
+     "s": 10,
+     "l": null
+    }
+   ],
+   "pickupOnly": false
+  },
+  {
+   "id": "ck-rafaello",
+   "cat": "كوكيز",
+   "name": "رافايلو كوكيز",
+   "price": 6,
+   "desc": "كوكيز بنكهة الرافايلو وجوز الهند. ⏱️ التجهيز ساعة إلى ساعتين",
+   "img": "cookies.jpg",
+   "available": true,
+   "opt": "كوكيز",
+   "badge": "",
+   "variants": [
+    {
+     "n": "صغير",
      "s": 6,
-     "l": 10
+     "l": null
     },
     {
-     "n": "أوريو",
+     "n": "كبير",
+     "s": 10,
+     "l": null
+    }
+   ],
+   "pickupOnly": false
+  },
+  {
+   "id": "ck-oreo",
+   "cat": "كوكيز",
+   "name": "أوريو كوكيز",
+   "price": 6,
+   "desc": "كوكيز بقطع الأوريو. ⏱️ التجهيز ساعة إلى ساعتين",
+   "img": "cookies.jpg",
+   "available": true,
+   "opt": "كوكيز",
+   "badge": "",
+   "variants": [
+    {
+     "n": "صغير",
      "s": 6,
-     "l": 12
+     "l": null
     },
     {
-     "n": "بودينغ",
+     "n": "كبير",
+     "s": 12,
+     "l": null
+    }
+   ],
+   "pickupOnly": false
+  },
+  {
+   "id": "ck-pudding",
+   "cat": "كوكيز",
+   "name": "بودينغ كوكيز",
+   "price": 16,
+   "desc": "كوكيز بودينغ طرية وغنية. ⏱️ التجهيز ساعة إلى ساعتين",
+   "img": "cookies.jpg",
+   "available": true,
+   "opt": "كوكيز",
+   "badge": "",
+   "variants": [
+    {
+     "n": "صغير",
      "s": 16,
-     "l": 25
+     "l": null
+    },
+    {
+     "n": "كبير",
+     "s": 25,
+     "l": null
     }
    ],
    "pickupOnly": false

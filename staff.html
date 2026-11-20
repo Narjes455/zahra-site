@@ -32,6 +32,7 @@
   <header><div class="hwrap"><div class="brand"><img src="img/logo.jpg" alt=""><div><b>Zahra Matcha</b><small>شاشة التحضير</small></div></div>
     <div style="text-align:left"><span class="live" id="live"></span><br><button class="lbtn" onclick="logout()">خروج</button></div></div></header>
   <div class="wrap">
+    <button id="openBtn" class="big" style="justify-content:center;margin-top:14px" onclick="toggleOpen()">…</button>
     <div class="tabs"><button class="on" data-t="orders" onclick="tab('orders')">🍵 الطلبات</button><button data-t="avail" onclick="tab('avail')">📋 التوفر</button></div>
     <div id="t-orders">
       <div class="cols">
@@ -50,7 +51,7 @@
 <script src="config.js"></script>
 <script>
 const API = window.ZAHRA_CONFIG.API_URL;
-const ST = ['جديد','قيد التحضير','جاهز'], NEXT = {'جديد':'قيد التحضير','قيد التحضير':'جاهز','جاهز':'تم التسليم'}, BTN = {'جديد':'ابدأ التحضير','قيد التحضير':'جاهز ✓','جاهز':'تم التسليم'};
+const ST = ['جديد','قيد التحضير','جاهز'], NEXT = {'جديد':'قيد التحضير','قيد التحضير':'جاهز','جاهز':'تم التسليم'}, BTN = {'جديد':'✅ قبول الطلب','قيد التحضير':'جاهز ✓','جاهز':'تم التسليم'};
 let PIN = sessionStorage.getItem('zpin') || '', DATA = null, seen = null, timer = null;
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -72,7 +73,13 @@ async function refresh(first){
   seen = ids; render();
   $('live').textContent = 'آخر تحديث ' + new Date().toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'});
 }
+function renderOpen(){ const b=$('openBtn'); if(!b||!DATA) return; const o=DATA.open!==false;
+  b.textContent = o ? '🟢 نستقبل الطلبات الحين — اضغطي للإيقاف' : '🔴 الطلبات موقفة — اضغطي للفتح';
+  b.style.background = o ? 'var(--green)' : '#c0392b'; }
+async function toggleOpen(){ const nv=!(DATA.open!==false); if(!confirm(nv?'فتح استقبال الطلبات؟':'إيقاف استقبال الطلبات؟ الموقع بيقول للعملاء إن الطلبات مقفلة')) return;
+  try{ await post({action:'setOpen',open:nv}); DATA.open=nv; renderOpen(); toast(nv?'الطلبات مفتوحة ✓':'الطلبات موقفة'); }catch(e){ toast(e.message); } }
 function render(){
+  renderOpen();
   ST.forEach((s,i)=>{ const L=DATA.orders.filter(o=>o.status===s);
     $('c-'+i).textContent=L.length;
     $('l-'+i).innerHTML = L.length ? L.map(o=>`<div class="ord">
@@ -83,13 +90,13 @@ function render(){
       ${o.address?`<div style="font-size:11px;margin-bottom:4px">📍 ${esc(o.address)}</div>`:''}
       ${o.receipt?`<a href="${esc(o.receipt)}" target="_blank">🧾 عرض الإيصال</a>`:''}
       <div class="act"><a class="ghost" href="tel:${esc(o.phone)}" style="padding:8px 10px;border-radius:10px;background:#fff;border:1px solid var(--line);text-decoration:none">📞</a>
-      ${s==='جديد'?`<button class="ghost" onclick="cancelOrder(${o.no})">إلغاء</button>`:''}
+      ${s==='جديد'?`<button class="ghost" style="color:#c0392b" onclick="cancelOrder(${o.no})">❌ رفض</button>`:''}
       <button onclick="move(${o.no},'${NEXT[s]}')">${BTN[s]}</button></div></div>`).join('') : '<div class="empty">ما فيه طلبات</div>'; });
   const cats=[]; DATA.menu.forEach(m=>{ if(!cats.includes(m.cat)) cats.push(m.cat); });
   $('tbl').innerHTML = cats.map(c=>`<div class="tr sub"><span>${esc(c)}</span></div>`+DATA.menu.filter(m=>m.cat===c).map(m=>`<div class="tr" style="grid-template-columns:1fr 60px"><span>${esc(m.name)}</span><button class="tog ${m.available?'on':''}" onclick="avail('${esc(m.id)}',${!m.available},this)"></button></div>`).join('')).join('');
 }
 async function move(no, status){ try{ await post({action:'setStatus',no,status}); const o=DATA.orders.find(x=>x.no===no); o.status=status; if(status==='تم التسليم') DATA.orders=DATA.orders.filter(x=>x!==o); render(); toast(`#${no} ← ${status}`); }catch(e){ toast(e.message); } }
-async function cancelOrder(no){ if(!confirm('إلغاء الطلب #'+no+'؟')) return; await move(no,'ملغي'); DATA.orders=DATA.orders.filter(x=>x.status!=='ملغي'); render(); }
+async function cancelOrder(no){ if(!confirm('رفض الطلب #'+no+'؟ بيوصل للعميل إن طلبه مرفوض')) return; await move(no,'ملغي'); DATA.orders=DATA.orders.filter(x=>x.status!=='ملغي'); render(); }
 async function avail(id, v, btn){ btn.classList.toggle('on',v); try{ await post({action:'setAvail',id,available:v}); DATA.menu.find(m=>m.id===id).available=v; render(); toast(v?'رجع متوفر ✓':'صار "نفدت الكمية"'); }catch(e){ btn.classList.toggle('on',!v); toast(e.message); } }
 if (PIN && API) login();
 </script>
